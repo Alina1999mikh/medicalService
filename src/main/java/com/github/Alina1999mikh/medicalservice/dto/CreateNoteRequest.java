@@ -1,21 +1,21 @@
 package com.github.Alina1999mikh.medicalservice.dto;
 
-import com.github.Alina1999mikh.medicalservice.model.fieldDataBase.*;
-import com.github.Alina1999mikh.medicalservice.model.fieldDataBase.result.Result;
+import jakarta.validation.constraints.Pattern;
 import lombok.Value;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Value
 public class CreateNoteRequest {
     UUID uuid;
-    Lab lab;
-    FullName name;
-    TestName test;
-    Date date;
-    Result result;
-    ReferenceRange referenceRange;
-    Unit unit;
-    Comment comment;
+    String lab;
+    @Pattern(regexp = "[a-zA-Zа-яА-Я]+ [a-zA-Zа-яА-Я]+")
+    String fullName;
+    String test;
+    LocalDate date;
+    String result;
+    String referenceRange;
+    String unit;
+    String comment;
 }
