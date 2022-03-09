@@ -6,7 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,13 +35,13 @@ class NoteControllerTest {
                         {
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "name": "Alina Mikhaleva",
+                            "fullName": "Alina Mikhaleva",
                             "test": "Fe",
-                            "date": "02.03.2021",
+                            "date": "2021-03-02",
                             "result": "6.42",
                             "referenceRange": "9-30.4",
                             "unit": "мкмоль/л",
-                            "comment": "null"
+                            "comment": "Тестовый тест"
                         }
                         """, headers()), String.class)
         )
@@ -49,33 +54,40 @@ class NoteControllerTest {
     @DisplayName("Должен успешно возвращать заметку по UUID")
     void findNoteByUuid() {
         // given
-        template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "name": "Alina Mikhaleva",
+                            "fullName": "Alina Mikhaleva",
                             "test": "Fe",
-                            "date": "02.03.2021",
+                            "date": "2021-03-02",
                             "result": "6.42",
                             "referenceRange": "9-30.4",
                             "unit": "мкмоль/л",
-                            "comment": "null"
+                            "comment": "Тестовый тест"
                 }
-                """, headers()), String.class);
+                """, headers()), String.class)
+        )
+                .extracting(ResponseEntity::getStatusCode)
+                .isEqualTo(HttpStatus.CREATED);
 
-        template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
-                            "name": "Alina Mikhaleva",
+                            "fullName": "Alina Mikhaleva",
                             "test": "HbA1C",
-                            "date": "02.03.2021",
+                            "date": "2021-03-02",
                             "result": "5.5",
                             "referenceRange": "0-6",
                             "unit": "%",
-                            "comment": "null"
+                            "comment": "Тестовый тест 2"
                 }
-                """, headers()), String.class);
+                """, headers()), String.class)
+        )
+                .extracting(ResponseEntity::getStatusCode)
+                .isEqualTo(HttpStatus.CREATED);
+
         // when
         assertThat(
                 template.getForEntity("/v1/note/{uuid}", String.class, "b5871b6b-e0e4-4053-9fc8-2782a217ce0a")
@@ -83,16 +95,7 @@ class NoteControllerTest {
                 // then
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-                        {"uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                        "lab": "invitro",
-                            "name": "Alina Mikhaleva",
-                            "test": "Fe",
-                            "date": "02.03.2021",
-                            "result": "6.42"
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л",
-                            "comment": "null"
-                        }""");
+                        {"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","firstName":"Alina","secondName":"Mikhaleva","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
     @Test
@@ -107,8 +110,7 @@ class NoteControllerTest {
                             "date": "02.03.2021",
                             "result": "6.42",
                             "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л",
-                            "comment": "null"
+                            "unit": "мкмоль/л"
                 }
                 """, headers()), String.class);
         // when
@@ -133,8 +135,7 @@ class NoteControllerTest {
                             "date": "02.03.2021",
                             "result": "6.42",
                             "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л",
-                            "comment": "null"
+                            "unit": "мкмоль/л"
                 }
                 """, headers()), String.class);
         // when
@@ -156,6 +157,29 @@ class NoteControllerTest {
         )
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @DisplayName("Должен выдавать ошибку если имя указано некорректно")
+    void testInvalidName() {
+        // when
+        assertThat(
+                template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+                        {
+                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
+                            "lab": "invitro",
+                            "fullName": "Alina1 Mikhaleva",
+                            "test": "Fe",
+                            "date": "2021-03-02",
+                            "result": "6.42",
+                            "referenceRange": "9-30.4",
+                            "unit": "мкмоль/л"
+                        }
+                        """, headers()), String.class)
+        )
+                // then
+                .extracting(ResponseEntity::getStatusCode)
+                .isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @AfterEach
