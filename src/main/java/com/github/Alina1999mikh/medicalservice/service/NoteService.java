@@ -5,7 +5,7 @@ import com.github.Alina1999mikh.medicalservice.dto.NoteResponse;
 import com.github.Alina1999mikh.medicalservice.entity.NoteEntity;
 import com.github.Alina1999mikh.medicalservice.model.ParsedFullName;
 import com.github.Alina1999mikh.medicalservice.repository.NoteRepository;
-import jakarta.validation.ValidationException;
+import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;

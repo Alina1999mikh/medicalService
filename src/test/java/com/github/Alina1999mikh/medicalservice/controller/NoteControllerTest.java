@@ -27,7 +27,7 @@ class NoteControllerTest {
     JdbcTemplate jdbcTemplate;
 
     @Test
-    @DisplayName("Должен успешно создавать заметку")
+    @DisplayName("Should create a note")
     void createNote() {
         // when
         assertThat(
@@ -51,7 +51,7 @@ class NoteControllerTest {
     }
 
     @Test
-    @DisplayName("Должен успешно возвращать заметку по UUID")
+    @DisplayName("Should return note by UUID")
     void findNoteByUuid() {
         // given
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
@@ -99,7 +99,7 @@ class NoteControllerTest {
     }
 
     @Test
-    @DisplayName("Должен вернуть NOT_FOUND если заметка не существует")
+    @DisplayName("Should return NOT_FOUND  if note doesn't exist")
     void shouldReturnNotFoundIfNoteNotExists() {
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
@@ -123,7 +123,7 @@ class NoteControllerTest {
     }
 
     @Test
-    @DisplayName("Должен успешно удалить заметку")
+    @DisplayName("Should delete a note")
     void deleteNoteByUuid() {
         // given
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
@@ -160,7 +160,7 @@ class NoteControllerTest {
     }
 
     @Test
-    @DisplayName("Должен выдавать ошибку если имя указано некорректно")
+    @DisplayName("Should throw an exception if name is incorrect")
     void testInvalidName() {
         // when
         assertThat(

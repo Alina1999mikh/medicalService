@@ -1,6 +1,6 @@
 package com.github.Alina1999mikh.medicalservice.dto;
 
-import jakarta.validation.constraints.Pattern;
+import javax.validation.constraints.Pattern;
 import lombok.Value;
 
 import java.time.LocalDate;
