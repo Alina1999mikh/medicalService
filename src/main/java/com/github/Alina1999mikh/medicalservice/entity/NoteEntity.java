@@ -17,8 +17,6 @@ public class NoteEntity {
     Long id;
     @NonNull UUID uuid;
     @NonNull String lab;
-    @NonNull String firstName;
-    @NonNull String secondName;
     @NonNull String test;
     @NonNull LocalDate date;
     @NonNull String result;

@@ -10,8 +10,6 @@ import java.util.UUID;
 public class CreateNoteRequest {
     UUID uuid;
     String lab;
-    @Pattern(regexp = "[a-zA-Zа-яА-Я]+ [a-zA-Zа-яА-Я]+")
-    String fullName;
     String test;
     LocalDate date;
     String result;

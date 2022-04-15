@@ -11,8 +11,6 @@ import java.util.UUID;
 public class NoteResponse {
     UUID uuid;
     String lab;
-    String firstName;
-    String secondName;
     String test;
     LocalDate date;
     String result;

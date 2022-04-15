@@ -35,7 +35,6 @@ class NoteControllerTest {
                         {
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "fullName": "Alina Mikhaleva",
                             "test": "Fe",
                             "date": "2021-03-02",
                             "result": "6.42",
@@ -58,7 +57,6 @@ class NoteControllerTest {
                 {
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "fullName": "Alina Mikhaleva",
                             "test": "Fe",
                             "date": "2021-03-02",
                             "result": "6.42",
@@ -75,7 +73,6 @@ class NoteControllerTest {
                 {
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
-                            "fullName": "Alina Mikhaleva",
                             "test": "HbA1C",
                             "date": "2021-03-02",
                             "result": "5.5",
@@ -95,7 +92,7 @@ class NoteControllerTest {
                 // then
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-                        {"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","firstName":"Alina","secondName":"Mikhaleva","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
+                        {"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
     @Test
@@ -105,7 +102,6 @@ class NoteControllerTest {
                 {
                     "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "name": "Alina Mikhaleva",
                             "test": "Fe",
                             "date": "02.03.2021",
                             "result": "6.42",
@@ -130,7 +126,6 @@ class NoteControllerTest {
                 {
                     "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
-                            "name": "Alina Mikhaleva",
                             "test": "Fe",
                             "date": "02.03.2021",
                             "result": "6.42",
@@ -157,29 +152,6 @@ class NoteControllerTest {
         )
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
-    }
-
-    @Test
-    @DisplayName("Should throw an exception if name is incorrect")
-    void testInvalidName() {
-        // when
-        assertThat(
-                template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
-                        {
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "fullName": "Alina1 Mikhaleva",
-                            "test": "Fe",
-                            "date": "2021-03-02",
-                            "result": "6.42",
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л"
-                        }
-                        """, headers()), String.class)
-        )
-                // then
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @AfterEach
