@@ -8,8 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Log4j2
@@ -43,6 +46,20 @@ public class NoteService {
                         .unit(it.getUnit())
                         .comment(it.getComment())
                         .build());
+    }
+
+    public List<NoteResponse> getAllNotes() {
+        return StreamSupport.stream(noteRepository.findAll().spliterator(),false)
+                .map(it -> NoteResponse.builder()
+                .uuid(it.getUuid())
+                .lab(it.getLab())
+                .test(it.getTest())
+                .date(it.getDate())
+                .result(it.getResult())
+                .referenceRange(it.getReferenceRange())
+                .unit(it.getUnit())
+                .comment(it.getComment())
+                .build()).collect(Collectors.toList());
     }
 
     public void deleteNoteByUuid(UUID uuid) {

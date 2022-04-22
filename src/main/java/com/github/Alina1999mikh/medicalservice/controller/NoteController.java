@@ -2,6 +2,7 @@ package com.github.Alina1999mikh.medicalservice.controller;
 
 import com.github.Alina1999mikh.medicalservice.dto.CreateNoteRequest;
 import com.github.Alina1999mikh.medicalservice.dto.NoteResponse;
+import com.github.Alina1999mikh.medicalservice.entity.NoteEntity;
 import com.github.Alina1999mikh.medicalservice.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,6 +34,11 @@ public class NoteController {
     @GetMapping("/{uuid}")
     ResponseEntity<NoteResponse> findNoteByUuid(@PathVariable UUID uuid) {
         return ResponseEntity.of(noteService.findNoteByUuid(uuid));
+    }
+
+    @GetMapping("/")
+    ResponseEntity<List<NoteResponse>> getAllNotes() {
+        return ResponseEntity.ok(noteService.getAllNotes());
     }
 
     @DeleteMapping("/{uuid}")
