@@ -1,17 +1,15 @@
 package com.github.Alina1999mikh.medicalservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,6 +18,17 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class NoteControllerTest {
 
+    //        auth.inMemoryAuthentication()
+//                .withUser("user1").password(passwordEncoder().encode("user1Pass"))
+//                .authorities("ROLE_USER");
+//        TestRestTemplate testRestTemplate
+//                = new TestRestTemplate("user", "passwd");
+//        ResponseEntity<String> response = testRestTemplate.
+//                getForEntity("/v1/note", String.class);
+//        LoginPage loginPage = new LoginPage(driver);
+//        loginPage.successLogin("root","root");
+    //        TestRestTemplate testRestTemplate
+//                = new TestRestTemplate("user", "passwd");
     @Autowired
     TestRestTemplate template;
 
@@ -27,9 +36,14 @@ class NoteControllerTest {
     JdbcTemplate jdbcTemplate;
 
     @Test
+    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @DisplayName("Should create a note")
     void createNote() {
-        // when
+        TestRestTemplate testRestTemplate
+                = new TestRestTemplate("user", "passwd");
+        ResponseEntity<String> response = testRestTemplate.
+                getForEntity("/v1/note", String.class);
+        Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertThat(
                 template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                         {
@@ -49,6 +63,7 @@ class NoteControllerTest {
                 .isEqualTo(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @Test
     @DisplayName("Should return note by UUID")
     void findNoteByUuid() {
@@ -97,6 +112,7 @@ class NoteControllerTest {
 
     @Test
     @DisplayName("Should return NOT_FOUND  if note doesn't exist")
+    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     void shouldReturnNotFoundIfNoteNotExists() {
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
@@ -119,6 +135,7 @@ class NoteControllerTest {
     }
 
     @Test
+    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @DisplayName("Should delete a note")
     void deleteNoteByUuid() {
         // given
@@ -153,7 +170,7 @@ class NoteControllerTest {
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
-
+//Authorization: Basic dXNlcjE6dXNlcjFQYXNz
     @AfterEach
     void afterEach() {
         jdbcTemplate.execute("DELETE FROM NOTES");
@@ -162,6 +179,7 @@ class NoteControllerTest {
     private HttpHeaders headers() {
         var headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "Basic dXNlcjE6dXNlcjFQYXNz");
         return headers;
     }
 }

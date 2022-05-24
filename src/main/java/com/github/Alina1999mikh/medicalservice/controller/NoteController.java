@@ -1,5 +1,6 @@
 package com.github.Alina1999mikh.medicalservice.controller;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext;
 import com.github.Alina1999mikh.medicalservice.dto.CreateNoteRequest;
 import com.github.Alina1999mikh.medicalservice.dto.NoteResponse;
 import com.github.Alina1999mikh.medicalservice.service.NoteService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.RemoteEndpoint;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +23,6 @@ import java.util.UUID;
 public class NoteController {
     private final NoteService noteService;
 
-    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @PostMapping
     ResponseEntity<?> createNote(@Validated @RequestBody CreateNoteRequest request) {
         noteService.createNote(request);
@@ -37,6 +38,7 @@ public class NoteController {
     @Operation(summary = "get", security = @SecurityRequirement(name="basicAuth"))
     @GetMapping("/")
     ResponseEntity<List<NoteResponse>> getNotes(Optional<String> test) {
+        System.out.println("getmethod");
         if (test.isPresent()) return ResponseEntity.ok(noteService.findNotesByTest(test.get()));
         else return ResponseEntity.ok(noteService.getAllNotes());
     }
@@ -45,6 +47,7 @@ public class NoteController {
     @DeleteMapping("/" +
             "delete/{uuid}")
     ResponseEntity<?> deleteNoteByUuid(@PathVariable UUID uuid) {
+        System.out.println("deletemethod");
         noteService.deleteNoteByUuid(uuid);
         return ResponseEntity.ok().build();
     }
