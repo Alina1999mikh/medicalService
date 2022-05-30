@@ -27,6 +27,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
+        http.csrf().disable();
     }
 
     @Bean
