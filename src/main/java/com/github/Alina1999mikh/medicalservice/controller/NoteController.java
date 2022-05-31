@@ -47,7 +47,6 @@ public class NoteController {
     @DeleteMapping("/" +
             "delete/{uuid}")
     ResponseEntity<?> deleteNoteByUuid(@PathVariable UUID uuid) {
-        System.out.println("deletemethod");
         noteService.deleteNoteByUuid(uuid);
         return ResponseEntity.ok().build();
     }

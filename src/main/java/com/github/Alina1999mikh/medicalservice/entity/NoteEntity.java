@@ -6,6 +6,7 @@ import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Builder
 @Table("NOTES")
 public class NoteEntity {
+    @NonNull BigInteger user_id;
     @Id
     Long id;
     @NonNull UUID uuid;

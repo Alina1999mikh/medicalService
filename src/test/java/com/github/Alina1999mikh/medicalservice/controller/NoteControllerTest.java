@@ -32,6 +32,7 @@ class NoteControllerTest {
         assertThat(
                 template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                         {
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
@@ -55,6 +56,7 @@ class NoteControllerTest {
         // given
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
@@ -71,6 +73,7 @@ class NoteControllerTest {
 
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
+                            "user_id": "1",
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -90,7 +93,7 @@ class NoteControllerTest {
                 template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-        {"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
+        {"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
     @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
@@ -100,6 +103,7 @@ class NoteControllerTest {
         // given
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -116,6 +120,7 @@ class NoteControllerTest {
 
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
+                            "user_id": "1",
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -140,7 +145,7 @@ class NoteControllerTest {
                 template.exchange("/v1/note/", HttpMethod.GET, new HttpEntity<>(headers()), String.class))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-      [{"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
+      [{"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"user_id":1,"uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
     }
 
 
@@ -150,7 +155,8 @@ class NoteControllerTest {
     void shouldReturnNotFoundIfNoteNotExists() {
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                    "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
+                            "user_id": "1",
+                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
                             "date": "02.03.2021",
@@ -173,7 +179,8 @@ class NoteControllerTest {
         // given
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                    "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
+                            "user_id": "1",
+                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
                             "date": "02.03.2021",

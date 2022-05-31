@@ -23,6 +23,7 @@ public class NoteService {
 
     public void createNote(CreateNoteRequest request) {
         noteRepository.save(NoteEntity.builder()
+                .user_id(request.getUser_id())
                 .uuid(request.getUuid())
                 .lab(request.getLab())
                 .test(request.getTest())
@@ -38,6 +39,7 @@ public class NoteService {
     public Optional<NoteResponse> findNoteByUuid(UUID uuid) {
         return noteRepository.findByUuid(uuid)
                 .map(it -> NoteResponse.builder()
+                        .user_id(it.getUser_id())
                         .uuid(it.getUuid())
                         .lab(it.getLab())
                         .test(it.getTest())
@@ -62,6 +64,7 @@ public class NoteService {
     public List<NoteResponse> getAllNotes() {
         return StreamSupport.stream(noteRepository.findAll().spliterator(), false)
                 .map(it -> NoteResponse.builder()
+                        .user_id(it.getUser_id())
                         .uuid(it.getUuid())
                         .lab(it.getLab())
                         .test(it.getTest())
