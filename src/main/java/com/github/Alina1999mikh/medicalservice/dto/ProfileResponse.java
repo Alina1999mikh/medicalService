@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Value
 @Builder
 public class ProfileResponse {
-    BigInteger user_id;
+    BigInteger userId;
     String login;
     String password;
     String fName;

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface ProfileRepository extends CrudRepository<ProfileEntity, BigInteger> {
-    Optional<ProfileEntity> findProfileByUserID(BigInteger userID);
+    Optional<ProfileEntity> findProfileByUserId(BigInteger userId);
 
    // NoteEntity deleteByUui(UUID uuid);
 }

@@ -22,7 +22,7 @@ public class ProfileService {
 
     public void createProfile(CreateProfileRequest request) {
         profileRepository.save(ProfileEntity.builder()
-                .user_id(request.getUser_id())
+                .userId(request.getUserId())
                 .login(request.getLogin())
                 .password(request.getPassword())
                 .fName(request.getFName())
@@ -33,10 +33,10 @@ public class ProfileService {
         );
     }
 
-    public Optional<ProfileResponse> findProfileByUserID(BigInteger userID) {
-        return profileRepository.findProfileByUserID(userID)
+    public Optional<ProfileResponse> findProfileByUserID(BigInteger userId) {
+        return profileRepository.findProfileByUserId(userId)
                 .map(it -> ProfileResponse.builder()
-                        .user_id(it.getUser_id())
+                        .userId(it.getUserId())
                         .login(it.getLogin())
                         .password(it.getPassword())
                         .fName(it.getFName())
