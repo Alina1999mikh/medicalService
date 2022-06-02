@@ -91,7 +91,7 @@ class NoteControllerTest {
                 template.exchange("/v1/note/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-        {       "username": "deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
+        {"username":"deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
     @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
@@ -143,7 +143,7 @@ class NoteControllerTest {
                 template.exchange("/v1/note/", HttpMethod.GET, new HttpEntity<>(headers()), String.class))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-      [{  "username": "deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"username": "deswier","uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
+      [{"username":"deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"username":"deswier","uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
     }
 
 
