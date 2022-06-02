@@ -14,9 +14,7 @@ import java.util.UUID;
 @Builder
 @Table("PROFILES")
 public class ProfileEntity {
-    @NonNull BigInteger userId;
-    @NonNull String login;
-    @NonNull String password;
+    @NonNull String username;
     @NonNull String fName;
     @NonNull String sName;
     @NonNull LocalDate date;

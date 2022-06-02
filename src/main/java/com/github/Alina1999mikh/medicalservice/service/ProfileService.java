@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -22,9 +23,7 @@ public class ProfileService {
 
     public void createProfile(CreateProfileRequest request) {
         profileRepository.save(ProfileEntity.builder()
-                .userId(request.getUserId())
-                .login(request.getLogin())
-                .password(request.getPassword())
+                .username(request.getUsername())
                 .fName(request.getFName())
                 .sName(request.getSName())
                 .date(request.getDate())
@@ -33,12 +32,10 @@ public class ProfileService {
         );
     }
 
-    public Optional<ProfileResponse> findProfileByUserID(BigInteger userId) {
-        return profileRepository.findProfileByUserId(userId)
+    public Optional<ProfileResponse> findProfileByUsername(String username) {
+        return profileRepository.findProfileByUsername(username)
                 .map(it -> ProfileResponse.builder()
-                        .userId(it.getUserId())
-                        .login(it.getLogin())
-                        .password(it.getPassword())
+                        .username(it.getUsername())
                         .fName(it.getFName())
                         .sName(it.getSName())
                         .date(it.getDate())

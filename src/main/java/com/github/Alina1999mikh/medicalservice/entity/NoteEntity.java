@@ -14,9 +14,7 @@ import java.util.UUID;
 @Builder
 @Table("NOTES")
 public class NoteEntity {
-    @NonNull BigInteger user_id;
-    @Id
-    Long id;
+    @NonNull String username;
     @NonNull UUID uuid;
     @NonNull String lab;
     @NonNull String test;

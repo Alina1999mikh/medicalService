@@ -8,9 +8,7 @@ import java.util.UUID;
 
 @Value
 public class CreateProfileRequest {
-    BigInteger userId;
-    String login;
-    String password;
+    String username;
     String fName;
     String sName;
     LocalDate date;

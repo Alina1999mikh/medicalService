@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class NoteControllerTest {
+class ProfileControllerTest {
 
     @Autowired
     TestRestTemplate template= new TestRestTemplate("user1", "user1Pass");
@@ -25,25 +25,20 @@ class NoteControllerTest {
     JdbcTemplate jdbcTemplate;
 
     @Test
-    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
-    @DisplayName("Should create a note")
+    @DisplayName("Should create a profile")
     void createNote() {
         assertThat(
-                template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+                template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                         {
-                            "username": "deswier",
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "test": "Fe",
-                            "date": "2021-03-02",
-                            "result": "6.42",
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л",
-                            "comment": "Тестовый тест"
+                          "userUuid": "b5871b0b-e0e4-4053-9fc8-2782a217ce0a",
+                          "username": "deswier",
+                          "date": "1999-06-02",
+                          "gender": "F",
+                          "fname": "Alina",
+                          "sname": "Mikhaleva"
                         }
                         """, headers()), String.class)
         )
-                // then
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.CREATED);
     }
@@ -55,7 +50,7 @@ class NoteControllerTest {
         // given
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
@@ -72,7 +67,7 @@ class NoteControllerTest {
 
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -86,12 +81,13 @@ class NoteControllerTest {
         )
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.CREATED);
+
         // when
         assertThat(
-                template.exchange("/v1/note/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-        {       "username": "deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
+        {"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
     @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
@@ -101,7 +97,7 @@ class NoteControllerTest {
         // given
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -118,7 +114,7 @@ class NoteControllerTest {
 
         assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
                             "lab": "invitro",
                             "test": "HbA1C",
@@ -143,7 +139,7 @@ class NoteControllerTest {
                 template.exchange("/v1/note/", HttpMethod.GET, new HttpEntity<>(headers()), String.class))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
-      [{  "username": "deswier","uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"username": "deswier","uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
+      [{"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"user_id":1,"uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
     }
 
 
@@ -153,7 +149,7 @@ class NoteControllerTest {
     void shouldReturnNotFoundIfNoteNotExists() {
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
@@ -165,7 +161,7 @@ class NoteControllerTest {
                 """, headers()), String.class);
 
         assertThat(
-               template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"a8871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"a8871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -177,7 +173,7 @@ class NoteControllerTest {
         // given
         template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "username": "deswier",
+                            "user_id": "1",
                             "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
                             "lab": "invitro",
                             "test": "Fe",
@@ -200,7 +196,7 @@ class NoteControllerTest {
     }
     @AfterEach
     void afterEach() {
-        jdbcTemplate.execute("DELETE FROM NOTES");
+        jdbcTemplate.execute("DELETE FROM PROFILES");
     }
 
     private HttpHeaders headers() {

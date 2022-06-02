@@ -5,13 +5,12 @@ import lombok.Value;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Value
 @Builder
 public class ProfileResponse {
-    BigInteger userId;
-    String login;
-    String password;
+    String username;
     String fName;
     String sName;
     LocalDate date;
