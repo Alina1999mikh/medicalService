@@ -1,5 +1,6 @@
 package com.github.Alina1999mikh.medicalservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Table("PROFILES")
 public class ProfileEntity {
     @Id
+    Long id;
     @NonNull String username;
     @NonNull String fName;
     @NonNull String sName;

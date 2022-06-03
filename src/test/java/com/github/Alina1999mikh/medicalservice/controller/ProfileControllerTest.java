@@ -26,16 +26,15 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("Should create a profile")
-    void createNote() {
+    void createProfile() {
         assertThat(
                 template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                         {
-                          "userUuid": "b5871b0b-e0e4-4053-9fc8-2782a217ce0a",
                           "username": "deswier",
+                          "fName": "Elena",
+                          "sName": "Mikhaleva",
                           "date": "1999-06-02",
-                          "gender": "F",
-                          "fname": "Alina",
-                          "sname": "Mikhaleva"
+                          "gender": "F"
                         }
                         """, headers()), String.class)
         )
@@ -45,37 +44,30 @@ class ProfileControllerTest {
 
     @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @Test
-    @DisplayName("Should return note by UUID")
-    void findNoteByUuid() {
+    @DisplayName("Should return profile by username")
+    void findProfileByUsername() {
         // given
-        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+        assertThat(template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "user_id": "1",
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "test": "Fe",
-                            "date": "2021-03-02",
-                            "result": "6.42",
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л",
-                            "comment": "Тестовый тест"
+                          "username": "deswier",
+                          "fname": "Elena",
+                          "sname": "Mikhaleva",
+                          "date": "1999-06-02",
+                          "gender": "F"
                 }
                 """, headers()), String.class)
         )
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.CREATED);
 
-        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+        assertThat(template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "user_id": "1",
-                            "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
-                            "lab": "invitro",
-                            "test": "HbA1C",
-                            "date": "2021-03-02",
-                            "result": "5.5",
-                            "referenceRange": "0-6",
-                            "unit": "%",
-                            "comment": "Тестовый тест 2"
+                          "username": "zer0chance",
+                          "date": "2000-02-20",
+                          "gender": "M",
+                          "fname": "Evgeny",
+                          "sname": "Ignatenko"
+                }
                 }
                 """, headers()), String.class)
         )
@@ -84,116 +76,32 @@ class ProfileControllerTest {
 
         // when
         assertThat(
-                template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getBody)
                 .isEqualTo("""
         {"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
     }
 
-    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
     @Test
-    @DisplayName("Should return all notes")
-    void getAllNotes() {
-        // given
-        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
-                {
-                            "user_id": "1",
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "test": "HbA1C",
-                            "date": "2021-03-02",
-                            "result": "6.4",
-                            "referenceRange": "0-6",
-                            "unit": "мкмоль/л",
-                            "comment": "Тестовый тест"
-                }
-                """, headers()), String.class)
-        )
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.CREATED);
-
-        assertThat(template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
-                {
-                            "user_id": "1",
-                            "uuid": "ed0bdada-dfad-42e3-aebd-f6e637dbd2a8",
-                            "lab": "invitro",
-                            "test": "HbA1C",
-                            "date": "2021-03-02",
-                            "result": "5.5",
-                            "referenceRange": "0-6",
-                            "unit": "%",
-                            "comment": "Тестовый тест 2"
-                }
-                """, headers()), String.class)
-        )
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.CREATED);
-
-        // when
-        assertThat(
-                template.exchange("/v1/note/", HttpMethod.GET, new HttpEntity<>(headers()), String.class))
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.OK);
-
-        assertThat(
-                template.exchange("/v1/note/", HttpMethod.GET, new HttpEntity<>(headers()), String.class))
-                .extracting(ResponseEntity::getBody)
-                .isEqualTo("""
-      [{"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"6.4","referenceRange":"0-6","unit":"мкмоль/л","comment":"Тестовый тест"},{"user_id":1,"uuid":"ed0bdada-dfad-42e3-aebd-f6e637dbd2a8","lab":"invitro","test":"HbA1C","date":"2021-03-02","result":"5.5","referenceRange":"0-6","unit":"%","comment":"Тестовый тест 2"}]""");
-    }
-
-
-    @Test
-    @DisplayName("Should return NOT_FOUND  if note doesn't exist")
+    @DisplayName("Should return NOT_FOUND  if profile doesn't exist")
     @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
-    void shouldReturnNotFoundIfNoteNotExists() {
-        template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
+    void shouldReturnNotFoundIfProfileNotExists() {
+        template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                 {
-                            "user_id": "1",
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "test": "Fe",
-                            "date": "02.03.2021",
-                            "result": "6.42",
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л"
+                          "username": "deswier",
+                          "date": "1999-06-02",
+                          "gender": "F",
+                          "fname": "Alina",
+                          "sname": "Mikhaleva"
                 }
                 """, headers()), String.class);
 
         assertThat(
-                template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"a8871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"a8871b6b-e0e4-4053-9fc8-2782a217ce0a"))
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
-    @Operation(summary = "create", security = @SecurityRequirement(name="basicAuth"))
-    @DisplayName("Should delete a note")
-    void deleteNoteByUuid() {
-        // given
-        template.exchange("/v1/note", HttpMethod.POST, new HttpEntity<>("""
-                {
-                            "user_id": "1",
-                            "uuid": "b5871b6b-e0e4-4053-9fc8-2782a217ce0a",
-                            "lab": "invitro",
-                            "test": "Fe",
-                            "date": "02.03.2021",
-                            "result": "6.42",
-                            "referenceRange": "9-30.4",
-                            "unit": "мкмоль/л"
-                }
-                """, headers()), String.class);
-        // when
-        assertThat(
-                template.exchange("/v1/note/delete/{uuid}", HttpMethod.DELETE, new HttpEntity<>(headers()), String.class, "b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.OK);
-
-        assertThat(
-                template.exchange("/v1/note/{uuid}", HttpMethod.GET, new HttpEntity<>(headers()), String.class, "b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
-                .extracting(ResponseEntity::getStatusCode)
-                .isEqualTo(HttpStatus.NOT_FOUND);
-    }
     @AfterEach
     void afterEach() {
         jdbcTemplate.execute("DELETE FROM PROFILES");
