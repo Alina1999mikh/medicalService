@@ -50,8 +50,8 @@ class ProfileControllerTest {
         assertThat(template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                 {
                           "username": "deswier",
-                          "fname": "Elena",
-                          "sname": "Mikhaleva",
+                          "fName": "Elena",
+                          "sName": "Mikhaleva",
                           "date": "1999-06-02",
                           "gender": "F"
                 }
@@ -65,9 +65,8 @@ class ProfileControllerTest {
                           "username": "zer0chance",
                           "date": "2000-02-20",
                           "gender": "M",
-                          "fname": "Evgeny",
-                          "sname": "Ignatenko"
-                }
+                          "fName": "Evgeny",
+                          "sName": "Ignatenko"
                 }
                 """, headers()), String.class)
         )
@@ -76,10 +75,11 @@ class ProfileControllerTest {
 
         // when
         assertThat(
-                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"b5871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"deswier"))
                 .extracting(ResponseEntity::getBody)
+                //todo
                 .isEqualTo("""
-        {"user_id":1,"uuid":"b5871b6b-e0e4-4053-9fc8-2782a217ce0a","lab":"invitro","test":"Fe","date":"2021-03-02","result":"6.42","referenceRange":"9-30.4","unit":"мкмоль/л","comment":"Тестовый тест"}""");
+                        {"username":"deswier","date":"1999-06-02","gender":"F","fname":"Elena","sname":"Mikhaleva"}""");
     }
 
     @Test
@@ -91,13 +91,13 @@ class ProfileControllerTest {
                           "username": "deswier",
                           "date": "1999-06-02",
                           "gender": "F",
-                          "fname": "Alina",
-                          "sname": "Mikhaleva"
+                          "fName": "Alina",
+                          "sName": "Mikhaleva"
                 }
                 """, headers()), String.class);
 
         assertThat(
-                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"a8871b6b-e0e4-4053-9fc8-2782a217ce0a"))
+                template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"zer0chance"))
                 .extracting(ResponseEntity::getStatusCode)
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
