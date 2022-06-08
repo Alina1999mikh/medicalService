@@ -31,8 +31,8 @@ class ProfileControllerTest {
                 template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                         {
                           "username": "deswier",
-                          "fName": "Elena",
-                          "sName": "Mikhaleva",
+                          "firstName": "Elena",
+                          "secondName": "Mikhaleva",
                           "date": "1999-06-02",
                           "gender": "F"
                         }
@@ -50,8 +50,8 @@ class ProfileControllerTest {
         assertThat(template.exchange("/v1/profile", HttpMethod.POST, new HttpEntity<>("""
                 {
                           "username": "deswier",
-                          "fName": "Elena",
-                          "sName": "Mikhaleva",
+                          "firstName": "Elena",
+                          "secondName": "Mikhaleva",
                           "date": "1999-06-02",
                           "gender": "F"
                 }
@@ -65,8 +65,8 @@ class ProfileControllerTest {
                           "username": "zer0chance",
                           "date": "2000-02-20",
                           "gender": "M",
-                          "fName": "Evgeny",
-                          "sName": "Ignatenko"
+                          "firstName": "Evgeny",
+                          "secondName": "Ignatenko"
                 }
                 """, headers()), String.class)
         )
@@ -77,9 +77,9 @@ class ProfileControllerTest {
         assertThat(
                 template.exchange("/v1/profile/{username}", HttpMethod.GET, new HttpEntity<>(headers()), String.class,"deswier"))
                 .extracting(ResponseEntity::getBody)
-                //todo
+                // then
                 .isEqualTo("""
-                        {"username":"deswier","date":"1999-06-02","gender":"F","fname":"Elena","sname":"Mikhaleva"}""");
+                        {"username":"deswier","firstName":"Elena","secondName":"Mikhaleva","date":"1999-06-02","gender":"F"}""");
     }
 
     @Test
@@ -91,8 +91,8 @@ class ProfileControllerTest {
                           "username": "deswier",
                           "date": "1999-06-02",
                           "gender": "F",
-                          "fName": "Alina",
-                          "sName": "Mikhaleva"
+                          "firstName": "Alina",
+                          "secondName": "Mikhaleva"
                 }
                 """, headers()), String.class);
 

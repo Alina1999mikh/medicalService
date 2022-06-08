@@ -11,8 +11,8 @@ import java.util.UUID;
 @Builder
 public class ProfileResponse {
     String username;
-    String fName;
-    String sName;
+    String firstName;
+    String secondName;
     LocalDate date;
     Character gender;
 }

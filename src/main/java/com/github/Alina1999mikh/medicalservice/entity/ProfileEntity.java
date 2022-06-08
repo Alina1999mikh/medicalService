@@ -16,8 +16,8 @@ public class ProfileEntity {
     @Id
     Long id;
     @NonNull String username;
-    @NonNull String fName;
-    @NonNull String sName;
+    @NonNull String firstName;
+    @NonNull String secondName;
     @NonNull LocalDate date;
     @NonNull Character gender;
 }
